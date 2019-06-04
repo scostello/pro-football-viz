@@ -1,0 +1,44 @@
+{
+  "name": "pfa-influxr",
+  "version": "0.1.0",
+  "description": "Data ingestion for pro-football-analytics",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel-node src/index.js build",
+    "provision": "babel-node src/index.js provision",
+    "scrape": "babel-node src/index.js scrape",
+    "job:geolocate": "babel-node src/jobs/geolocate.js",
+    "test": "nyc mocha $NODE_DEBUG_OPTION --require babel-core/register test/**/*.spec.js --recursive --exit"
+  },
+  "author": "Sean Costello <me@seancostello.io>",
+  "license": "ISC",
+  "dependencies": {
+    "@google/maps": "^0.5.5",
+    "commander": "^2.20.0",
+    "dotenv": "^8.0.0",
+    "glob": "^7.1.4",
+    "massive": "^5.11.0",
+    "mkdirp": "^0.5.1",
+    "rxjs": "^6.5.2",
+    "sanctuary": "^2.0.0",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/plugin-transform-destructuring": "^7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/register": "^7.4.4",
+    "@babel/runtime": "^7.4.5",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "rimraf": "^2.6.3"
+  }
+}
