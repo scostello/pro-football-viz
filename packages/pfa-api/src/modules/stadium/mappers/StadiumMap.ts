@@ -28,14 +28,14 @@ const StadiumMap = {
           city: rawStadium.address.city,
           stateCode: rawStadium.address.state,
           zipCode: rawStadium.address.zipcode,
-          countyFips: rawStadium.address.county_fips,
+          countyFips: rawStadium.address.county_fips
         },
         latitude: rawStadium.location.latitude,
         longitude: rawStadium.location.longitude,
-        geoPoint: rawStadium.location.geography_point,
+        geoPoint: rawStadium.location.geography_point
       },
       name: rawStadium.name,
-      yearOpened: rawStadium.year_opened,
+      yearOpened: rawStadium.year_opened
     });
   },
   toPersistence: (stadium: Stadium): Partial<StadiumPersistence> => {
@@ -51,9 +51,9 @@ const StadiumMap = {
       zipcode: stadium.location.address.zipCode,
       latitude: stadium.location.latitude,
       longitude: stadium.location.longitude,
-      geography_point: stadium.location.geoPoint,
+      geography_point: stadium.location.geoPoint
     };
-  },
+  }
 };
 
 export { StadiumMap };

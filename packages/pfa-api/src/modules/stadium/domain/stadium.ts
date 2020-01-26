@@ -28,21 +28,18 @@ const StadiumFactory = {
           city: props.location.address.city,
           stateCode: props.location.address.stateCode,
           zipCode: props.location.address.zipCode,
-          countyFips: props.location.address.countyFips,
+          countyFips: props.location.address.countyFips
         },
         latitude: props.location.latitude,
         longitude: props.location.longitude,
-        geoPoint: props.location?.geoPoint,
+        geoPoint: props.location?.geoPoint
       },
       name: props.name,
-      yearOpened: props.yearOpened,
+      yearOpened: props.yearOpened
     };
 
     return Result.Ok<Stadium>(stadium);
-  },
+  }
 };
 
-export {
-  Stadium,
-  StadiumFactory,
-};
+export { Stadium, StadiumFactory };

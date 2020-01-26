@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS reporting.plays (
 );
  */
 
-
 interface PlayContext {
   readonly teamOnOffense: number; // reference
   readonly teamOnDefense: number; // reference
@@ -73,4 +72,4 @@ interface Play {
   readonly result: readonly PlayResult[];
 }
 
-export { Play }
+export { Play };

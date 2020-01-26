@@ -11,7 +11,7 @@ const CreateStadiumTypeDefs = () => gql`
     zipCode: String
     countyFips: Int
   }
-  
+
   type Location {
     googleLocation: JSON
     address: Address
@@ -19,7 +19,7 @@ const CreateStadiumTypeDefs = () => gql`
     latitude: Float
     geoPoint: String
   }
-  
+
   type Stadium implements Node {
     id: ID!
     name: String
@@ -54,8 +54,8 @@ const CreateStadiumResolvers = (repo: StadiumRepo) => {
 
   return {
     Query: {
-      stadiums: query.stadiums,
-    },
+      stadiums: query.stadiums
+    }
   };
 };
 

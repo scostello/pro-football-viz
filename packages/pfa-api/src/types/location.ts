@@ -14,4 +14,4 @@ interface Location {
   readonly geom?: GeometryObject;
 }
 
-export { Address, Location }
+export { Address, Location };

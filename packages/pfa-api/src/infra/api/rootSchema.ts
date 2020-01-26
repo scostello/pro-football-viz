@@ -37,7 +37,7 @@ const CreateRootTypeDefs = () => gql`
     pageInfo: PageInfo!
     totalCount: Int!
   }
-  
+
   """
   Types
   """

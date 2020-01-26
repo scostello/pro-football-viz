@@ -1,4 +1,8 @@
-import { ApolloServer, ApolloServerExpressConfig, IResolvers } from 'apollo-server-express';
+import {
+  ApolloServer,
+  ApolloServerExpressConfig,
+  IResolvers
+} from 'apollo-server-express';
 import { DocumentNode } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 
@@ -13,4 +17,4 @@ const createGqlServer = (config: GqlServerConfig): ApolloServer => {
   return new ApolloServer({ schema, context });
 };
 
-export { createGqlServer }
+export { createGqlServer };

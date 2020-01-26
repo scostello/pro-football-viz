@@ -4,6 +4,7 @@ import { createKnexClient } from './knex';
 
 type DbConfig = Knex.Config;
 
-const createDbClient = (config: DbConfig): Rx.Observable<Knex> => Rx.of(createKnexClient(config));
+const createDbClient = (config: DbConfig): Rx.Observable<Knex> =>
+  Rx.of(createKnexClient(config));
 
-export { createDbClient }
+export { createDbClient };

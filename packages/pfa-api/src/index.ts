@@ -10,21 +10,15 @@ const config = {
 
 const listenCallback = () =>
   // tslint:disable-next-line:no-console
-  console.log(`🚀 Server ready at http://${config.host}:${config.port}!!!!`);
+  console.log(`🚀 Server ready at http://${config.host}:${config.port}!`);
 
 const initialize = dbClient => {
   const FranchiseModule = franchise.CreateModule(dbClient);
   const StadiumModule = stadium.CreateModule(dbClient);
 
   return createApi({
-    typeDefs: [
-      FranchiseModule.typeDefs,
-      StadiumModule.typeDefs,
-    ],
-    resolvers: merge(
-      FranchiseModule.resolvers,
-      StadiumModule.resolvers,
-    ),
+    typeDefs: [FranchiseModule.typeDefs, StadiumModule.typeDefs],
+    resolvers: merge(FranchiseModule.resolvers, StadiumModule.resolvers)
   });
 };
 
@@ -41,11 +35,9 @@ const bootstrap = () => {
   });
 
   // tslint:disable-next-line:no-expression-statement
-  dbClient$
-    .pipe(RxOp.mergeMap(initialize))
-    .subscribe({
-      next: api => api.listen(config, listenCallback)
-    });
+  dbClient$.pipe(RxOp.mergeMap(initialize)).subscribe({
+    next: api => api.listen(config, listenCallback)
+  });
 };
 
 bootstrap();

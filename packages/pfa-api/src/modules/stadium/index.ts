@@ -5,7 +5,7 @@ import { CreateStadiumRepo } from './repos';
 const CreateModule = (client: QueryBuilder) => {
   return {
     resolvers: CreateStadiumResolvers(CreateStadiumRepo(client)),
-    typeDefs: CreateStadiumTypeDefs(),
+    typeDefs: CreateStadiumTypeDefs()
   };
 };
 

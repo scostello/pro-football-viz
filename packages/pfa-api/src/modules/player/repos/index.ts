@@ -1,5 +1,3 @@
 import { CreatePlayerRepo } from './playerRepo';
 
-export {
-  CreatePlayerRepo,
-}
+export { CreatePlayerRepo };

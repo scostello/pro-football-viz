@@ -19,10 +19,10 @@ const FranchiseMap = {
       currentName: {
         abbr: rawFranchise.current_name_abbr,
         full: rawFranchise.current_name_full,
-        mascot: rawFranchise.current_mascot,
+        mascot: rawFranchise.current_mascot
       },
       activeFrom: rawFranchise.active_from,
-      activeTo: rawFranchise.active_to,
+      activeTo: rawFranchise.active_to
     });
   },
   toPersistence: (franchise: Franchise): Partial<FranchisePersistence> => {
@@ -33,9 +33,9 @@ const FranchiseMap = {
       current_name_full: franchise?.currentName.full,
       current_mascot: franchise?.currentName.mascot,
       active_from: franchise.activeFrom,
-      active_to: franchise.activeTo,
+      active_to: franchise.activeTo
     };
-  },
+  }
 };
 
 export { FranchiseMap };

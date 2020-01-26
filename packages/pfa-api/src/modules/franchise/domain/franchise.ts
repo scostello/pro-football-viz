@@ -23,15 +23,11 @@ const FranchiseFactory = {
       currentOwner: props.currentOwner,
       currentName: props.currentName,
       activeFrom: props.activeFrom,
-      activeTo: props.activeTo,
+      activeTo: props.activeTo
     };
 
     return Result.Ok<Franchise>(franchise);
   }
 };
 
-export {
-  Franchise,
-  FranchiseName,
-  FranchiseFactory,
-};
+export { Franchise, FranchiseName, FranchiseFactory };

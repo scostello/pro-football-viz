@@ -1,1 +1,1 @@
-export { FranchiseMap, FranchisePersistence } from './FranchiseMap'
+export { FranchiseMap, FranchisePersistence } from './FranchiseMap';

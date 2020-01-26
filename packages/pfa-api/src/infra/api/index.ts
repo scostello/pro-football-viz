@@ -14,12 +14,13 @@ interface ApiConfig {
   readonly resolvers: IResolvers;
 }
 
-const withRootResolvers = (resolvers: IResolvers): IResolvers =>  merge(resolvers, CreateRootResolvers());
+const withRootResolvers = (resolvers: IResolvers): IResolvers =>
+  merge(resolvers, CreateRootResolvers());
 
-const withRootTypeDefs = (typeDefs: DocumentNode[]): DocumentNode[] =>  ([
+const withRootTypeDefs = (typeDefs: DocumentNode[]): DocumentNode[] => [
   ...typeDefs,
   CreateRootTypeDefs()
-]);
+];
 
 const context = ({ req, connection }) => {
   if (connection) {
@@ -30,8 +31,8 @@ const context = ({ req, connection }) => {
     req,
     util: {
       ...Util,
-      ...Relay,
-    },
+      ...Relay
+    }
   };
 };
 
@@ -41,7 +42,7 @@ const createApi = (config: ApiConfig): Rx.Observable<Server> => {
   const gqlServer: ApolloServer = createGqlServer({
     typeDefs: withRootTypeDefs(typeDefs),
     resolvers: withRootResolvers(resolvers),
-    context,
+    context
   });
 
   // tslint:disable-next-line:no-expression-statement

@@ -5,7 +5,7 @@ interface TranslateBase64 {
 
 const Util: TranslateBase64 = {
   toBase64: (val: string) => Buffer.from(val).toString('base64'),
-  fromBase64: (val: string) => Buffer.from(val, 'base64').toString('ascii'),
+  fromBase64: (val: string) => Buffer.from(val, 'base64').toString('ascii')
 };
 
 export { Util };

@@ -8,20 +8,20 @@ export interface StadiumRepo {
   readonly total: () => number;
 }
 
-const findByIdWith = (baseQuery: QueryBuilder) =>
-  (stadiumId: number): Bluebird<Stadium> =>
-    baseQuery
-      .select<StadiumPersistence>('*')
-      .where({ id_stadium: stadiumId })
-      .first(1)
-      .then(StadiumMap.toDomain);
+const findByIdWith = (baseQuery: QueryBuilder) => (
+  stadiumId: number
+): Bluebird<Stadium> =>
+  baseQuery
+    .select<StadiumPersistence>('*')
+    .where({ id_stadium: stadiumId })
+    .first(1)
+    .then(StadiumMap.toDomain);
 
-const totalWith = (baseQuery: QueryBuilder) =>
-  (): Bluebird<number> =>
-    baseQuery
-      .count('id_stadium')
-      .first()
-      .then(({ count }) => count);
+const totalWith = (baseQuery: QueryBuilder) => (): Bluebird<number> =>
+  baseQuery
+    .count('id_stadium')
+    .first()
+    .then(({ count }) => count);
 
 const CreateStadiumRepo = (client: QueryBuilder): StadiumRepo => {
   const baseQuery = client
@@ -30,11 +30,8 @@ const CreateStadiumRepo = (client: QueryBuilder): StadiumRepo => {
 
   return {
     findById: findByIdWith(baseQuery),
-    total: totalWith(baseQuery),
+    total: totalWith(baseQuery)
   };
 };
 
-export {
-  CreateStadiumRepo,
-  findByIdWith,
-};
+export { CreateStadiumRepo, findByIdWith };

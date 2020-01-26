@@ -1,1 +1,1 @@
-export { StadiumMap, StadiumPersistence } from './StadiumMap'
+export { StadiumMap, StadiumPersistence } from './StadiumMap';

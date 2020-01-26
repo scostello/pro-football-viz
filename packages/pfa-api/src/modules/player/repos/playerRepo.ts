@@ -10,32 +10,25 @@ interface PlayerRepo {
   readonly findByName: (name: PlayerName) => Bluebird<Player>;
 }
 
-const findByIdWith = (baseQuery: QueryBuilder) =>
-  (id: number): Bluebird<Player> =>
-    baseQuery
-      .select<Player>('*')
-      .where({ id_player: id });
+const findByIdWith = (baseQuery: QueryBuilder) => (
+  id: number
+): Bluebird<Player> => baseQuery.select<Player>('*').where({ id_player: id });
 
-const findByNameWith = (baseQuery: QueryBuilder) =>
-  (name: PlayerName): Bluebird<Player> =>
-    baseQuery
-      .select<Player>()
-      .where({ first_name: name.first })
-      .orWhere({ last_name: name.last });
+const findByNameWith = (baseQuery: QueryBuilder) => (
+  name: PlayerName
+): Bluebird<Player> =>
+  baseQuery
+    .select<Player>()
+    .where({ first_name: name.first })
+    .orWhere({ last_name: name.last });
 
 const CreatePlayerRepo = (client: QueryBuilder): PlayerRepo => {
-  const baseQuery = client
-    .withSchema('reporting')
-    .from('players');
+  const baseQuery = client.withSchema('reporting').from('players');
 
   return {
     findById: findByIdWith(baseQuery),
-    findByName: findByNameWith(baseQuery),
+    findByName: findByNameWith(baseQuery)
   };
 };
 
-export {
-  CreatePlayerRepo,
-  findByIdWith,
-  findByNameWith,
-};
+export { CreatePlayerRepo, findByIdWith, findByNameWith };

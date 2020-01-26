@@ -1,10 +1,11 @@
-version: '3'
+version: '3.7'
 services:
 
   pfa-api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: packages/pfa-api/Dockerfile
+      target: debug
     command: ["watch"]
     environment:
       NODE_ENV: "local"
@@ -14,7 +15,7 @@ services:
       PG_DB_PASSWORD: mysecretpassword
       PG_DB_NAME: pro_football_analytics
     volumes:
-      - ./src:/apps/pfa-api/src
+      - ./packages/pfa-api/src:/opt/packages/pfa-api/src
     depends_on:
       - postgres
     ports:

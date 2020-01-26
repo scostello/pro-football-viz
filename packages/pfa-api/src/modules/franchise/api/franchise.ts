@@ -16,13 +16,13 @@ const CreateFranchiseTypeDefs = () => gql`
     name: PersonName
     dob: Date
   }
-  
+
   type FranchiseName {
     abbr: String
     full: String
     mascot: String
   }
-  
+
   type Franchise implements Node {
     id: ID!
     currentName: FranchiseName
@@ -64,19 +64,21 @@ const CreateFranchiseTypeDefs = () => gql`
 `;
 
 const CreateFranchiseResolvers = (repo: FranchiseRepo) => {
-  const { query, franchiseConnection, franchiseNode } = CreateFranchiseSvc(repo);
+  const { query, franchiseConnection, franchiseNode } = CreateFranchiseSvc(
+    repo
+  );
   return {
     Query: {
-      franchises: query.franchises,
+      franchises: query.franchises
     },
     FranchiseConnection: {
       edges: franchiseConnection.edges,
       nodes: franchiseConnection.nodes,
       pageInfo: franchiseConnection.pageInfo,
-      totalCount: franchiseConnection.totalCount,
+      totalCount: franchiseConnection.totalCount
     },
     Franchise: {
-      currentStadium: franchiseNode.stadium,
+      currentStadium: franchiseNode.stadium
     }
   };
 };

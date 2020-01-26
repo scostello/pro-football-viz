@@ -4,4 +4,4 @@ interface Owner extends Person {
   readonly networth: number;
 }
 
-export { Owner }
+export { Owner };
