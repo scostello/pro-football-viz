@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+kubectl config use-context minikube
+
+if [[ -n $(helm ls --all -q) ]]; then
+  helm del $(helm ls --all -q)
+fi

@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+
+HOSTS_FILE="/etc/hosts"
+MINIKUBE_IP=$(minikube ip)
+MINIKUBE_HOSTNAME="minikube.test"
+MINIKUBE_SUBDOMAINS="api db"
+
+kubectl config use-context minikube
+
+if [[ $EUID -ne 0 ]]; then
+  echo "Please enter your password for 'sudo' - Required to update ${HOSTS_FILE}"
+  sudo echo >> /dev/null
+fi
+
+if [[ -n "$(grep ${MINIKUBE_HOSTNAME} ${HOSTS_FILE})" ]]; then
+  sudo sed -i '' -e "/${MINIKUBE_HOSTNAME}/d" ${HOSTS_FILE}
+fi
+
+HOSTS_ENTRY="${MINIKUBE_IP} ${MINIKUBE_HOSTNAME}"
+for subdomain in ${MINIKUBE_SUBDOMAINS}; do
+  HOSTS_ENTRY="${HOSTS_ENTRY} ${subdomain}.${MINIKUBE_HOSTNAME}"
+done
+
+echo "${HOSTS_ENTRY}" | sudo tee -a ${HOSTS_FILE}
+
+helm repo update
+
+install_postgres() {
+  release_name="postgresql-ha"
+  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+      helm uninstall ${release_name}
+  fi
+
+  helm install ${release_name} \
+    --version "1.4.6" \
+    --set postgresql.password="password" \
+    --set service.type="NodePort" \
+    --set service.nodePort="30543" \
+    bitnami/postgresql-ha
+}
+
+install_kafka() {
+  release_name="kafka"
+  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+      helm uninstall ${release_name}
+  fi
+
+  helm install ${release_name} \
+    --version "7.3.1" \
+    bitnami/kafka
+}
+
+
+install_postgres
+install_kafka
+#exec skaffold dev

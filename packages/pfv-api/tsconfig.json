@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
     "target": "es2017",
     "moduleResolution": "node",
     "module": "commonjs",
@@ -37,5 +38,8 @@
     "types": ["node", "jest"],
     "typeRoots": ["node_modules/@types"]
   },
-  "exclude": ["node_modules/**", "**/*.test.ts"]
+  "exclude": ["node_modules/**", "**/*.test.ts"],
+  "include": [
+    "./src"
+  ]
 }

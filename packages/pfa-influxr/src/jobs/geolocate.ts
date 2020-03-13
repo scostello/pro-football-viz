@@ -12,8 +12,6 @@ const mapsClient = createClient({
 
 const mapJsonResults = S.props(['json', 'results']);
 
-const getGeomLocation = S.props(['geometry', 'location']);
-
 const fetchLocation = ({ team, query }) => Rx
   .from(mapsClient.places({ query })
     .asPromise()
