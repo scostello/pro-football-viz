@@ -4,26 +4,30 @@
   "description": "Data ingestion for pro-football-analytics",
   "main": "index.js",
   "scripts": {
-    "build": "ts-node src/index.ts build",
+    "build": "ts-node src/index.ts build-csv",
     "provision": "ts-node src/index.ts provision"
   },
   "author": "Sean Costello <me@seancostello.io>",
   "license": "ISC",
   "dependencies": {
     "@google/maps": "^1.1.0",
+    "aws-sdk": "^2.639.0",
     "commander": "^4.1.1",
+    "csv-parser": "^2.3.2",
     "dotenv": "^8.2.0",
+    "etl": "^0.6.12",
     "glob": "^7.1.6",
-    "massive": "^6.1.4",
+    "massive": "^6.2.0",
     "mkdirp": "^1.0.3",
     "rxjs": "^6.5.4",
     "sanctuary": "^3.0.0",
+    "unzipper": "^0.10.10",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@types/node": "^13.5.0",
-    "rimraf": "^3.0.0",
+    "@types/node": "^13.9.1",
+    "rimraf": "^3.0.2",
     "ts-node": "^8.6.2",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   }
 }

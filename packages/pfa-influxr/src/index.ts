@@ -1,18 +1,45 @@
+import fs from 'fs';
+import etl from 'etl';
 import program from 'commander';
-import { generate, provision } from './sql-builder';
+import unzipper from 'unzipper';
+import csv from 'csv-parser';
+import { headers } from './jobs/load-aa-data';
+// import { pathToFileURL } from 'url';
+// import S3 from 'aws-sdk/clients/s3';
+// import { generate } from './sql-builder';
 
-const init = () => {
+const init = async () => {
   program
-    .command('build')
-    .description('Build the SQL files for our project.')
-    .action(generate);
+    .command('build-csv')
+    .action(run);
 
-  program
-    .command('provision')
-    .description('Provision a database for our project.')
-    .action(provision);
+  // program
+  //   .command('build-sql')
+  //   .description('Build the SQL files for our project.')
+  //   .action(generate);
 
-  program.parse(process.argv);
+  await program.parseAsync(process.argv);
 };
+
+async function run() {
+  // const s3Client = new S3({ apiVersion: '2006-03-01' });
+
+  // s3Client.getObject({
+  //   Bucket: 'nfl-data',
+  //   Key: 'nfl_19.zip',
+  // })
+  //   .createReadStream()
+  await fs.createReadStream('./nfl-test.zip')
+    .pipe(unzipper.Parse())
+    .pipe(etl.map(entry => {
+      const headerMap = headers[entry.path];
+      return entry
+        .pipe(csv({
+          mapHeaders: ({ header }) => headerMap[header],
+        }))
+        .pipe(etl.stringify())
+        .pipe(etl.toFile('./sample.csv'));
+    }));
+}
 
 init();

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:password@db.minikube.test:30543/postgres?schema=public"
+  url      = "postgresql://postgres:oi8XIsShM8@localhost:5434/postgres?schema=public"
 }
 
 model PersonName {

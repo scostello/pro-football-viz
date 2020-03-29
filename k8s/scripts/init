@@ -26,17 +26,17 @@ echo "${HOSTS_ENTRY}" | sudo tee -a ${HOSTS_FILE}
 helm repo update
 
 install_postgres() {
-  release_name="postgresql-ha"
+  release_name="postgresql"
   if [[ -z $(helm ls --filter=${release_name}) ]]; then
       helm uninstall ${release_name}
   fi
 
   helm install ${release_name} \
-    --version "1.4.6" \
-    --set postgresql.password="password" \
+    --version "8.6.4" \
+    --set postgresql.password="super" \
     --set service.type="NodePort" \
     --set service.nodePort="30543" \
-    bitnami/postgresql-ha
+    bitnami/postgresql
 }
 
 install_kafka() {
