@@ -2,10 +2,10 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.snaps (
 	uuid                 integer,
 	game_id              integer,
 	team                 varchar,
-	player               varchar(7),
+	player               varchar,
 	position_depth_chart varchar,
 	position_starting    varchar,
-	snaps                integer
+	snaps                integer,
 );
 
 COPY snaps

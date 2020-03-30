@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.offense (
 	uuid                        integer,
 	game_id                     integer,
-	player                      varchar(7),
+	player                      varchar,
 	passing_attempts            smallint,
 	passing_completions         smallint,
 	passing_yardage             integer,
@@ -28,11 +28,11 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.offense (
 	player_game_number          smallint,
 	seasons_played              smallint,
 	year                        integer,
-	team                        varchar(3),
-	position_depth_chart        varchar(8),
+	team                        varchar,
+	position_depth_chart        varchar,
 	jersey_number               smallint,
 	depth_chart                 smallint,
-	nfl_player_id               varchar
+	nfl_player_id               varchar,
 );
 
 COPY offense

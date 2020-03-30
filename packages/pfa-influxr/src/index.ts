@@ -31,14 +31,14 @@ async function run() {
   //   .createReadStream()
   await fs.createReadStream('./nfl-test.zip')
     .pipe(unzipper.Parse())
-    .pipe(etl.map(entry => {
+    .pipe(etl.map((entry) => {
       const headerMap = headers[entry.path];
-      return entry
+      entry
         .pipe(csv({
           mapHeaders: ({ header }) => headerMap[header],
         }))
         .pipe(etl.stringify())
-        .pipe(etl.toFile('./sample.csv'));
+        .pipe(etl.toFile(`./converted/${entry.path}`));
     }));
 }
 

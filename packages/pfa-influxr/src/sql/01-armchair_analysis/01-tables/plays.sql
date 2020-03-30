@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.plays (
 	game_id                 integer,
 	play_id                 integer,
-	team_on_offense         varchar(3),
-	team_on_defense         varchar(3),
-	play_type               varchar(10),
+	team_on_offense         varchar,
+	team_on_defense         varchar,
+	play_type               varchar,
 	drive_sequence          smallint,
 	length_in_seconds       smallint,
 	quarter                 smallint,

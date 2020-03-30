@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.players (
-	player_id            varchar(7),
-	first_name           varchar(20),
-	last_name            varchar(25),
-	play_by_play_name    varchar(25),
-	position_1           varchar(2),
-	position_2           varchar(2),
+	player_id            varchar,
+	first_name           varchar,
+	last_name            varchar,
+	play_by_play_name    varchar,
+	position_1           varchar,
+	position_2           varchar,
 	height               smallint,
 	weight               integer,
 	date_of_birth        date,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.players (
 	position_depth_chart varchar,
 	jersey_number        smallint,
 	depth_chart          smallint,
-	nfl_player_id        varchar
+	nfl_player_id        varchar,
 );
 
 COPY players

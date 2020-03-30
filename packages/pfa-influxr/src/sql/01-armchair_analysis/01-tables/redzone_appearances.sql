@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.redzone_appearances (
 	uuid                        integer,
 	game_id                     integer,
-	player                      varchar(7),
+	player                      varchar,
 	passing_attempts            smallint,
 	passing_completions         smallint,
 	passing_yardage             integer,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.redzone_appearances (
 	receptions                  smallint,
 	receiving_yardage           integer,
 	fumbles_lost                smallint,
-	penalty_yardage             smallint
+	penalty_yardage             smallint,
 );
 
 COPY redzone_appearances

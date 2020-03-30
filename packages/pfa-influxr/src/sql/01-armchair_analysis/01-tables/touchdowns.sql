@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.touchdowns (
 	down            smallint,
 	yards           smallint,
 	points          smallint,
-	scoring_player  varchar(7),
-	type            varchar(4)
+	scoring_player  varchar,
+	type            varchar,
 );
 
 COPY touchdowns

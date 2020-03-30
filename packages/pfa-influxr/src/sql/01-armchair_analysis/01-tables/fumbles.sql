@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.fumbles (
 	fumbler             varchar(7),
 	recovering_player   varchar(7),
 	return_yardage      integer,
-	forcing_player      varchar(7)
+	forcing_player      varchar(7),
+	fumble_lost					boolean
 );
 
 COPY fumbles
