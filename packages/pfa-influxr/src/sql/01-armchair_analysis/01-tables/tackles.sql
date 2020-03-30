@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.tackles (
 	uuid    integer,
-	play_id integer,
+	id_play integer,
 	tackler varchar(7),
 	value   numeric
 );

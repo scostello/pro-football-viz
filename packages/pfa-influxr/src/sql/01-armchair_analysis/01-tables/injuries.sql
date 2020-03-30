@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.injuries (
 	uuid            integer,
-	game_id         integer,
+	id_game         integer,
 	player          varchar(7),
 	team            varchar(3),
 	details         varchar(25),

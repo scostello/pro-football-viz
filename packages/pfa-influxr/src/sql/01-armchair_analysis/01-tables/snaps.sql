@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.snaps (
 	uuid                 integer,
-	game_id              integer,
+	id_game              integer,
 	team                 varchar,
 	player               varchar,
 	position_depth_chart varchar,

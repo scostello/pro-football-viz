@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.punts (
-	play_id         integer,
+	id_play         integer,
 	punter          varchar(7),
 	gross_yardage   smallint,
 	net_yardage     smallint,

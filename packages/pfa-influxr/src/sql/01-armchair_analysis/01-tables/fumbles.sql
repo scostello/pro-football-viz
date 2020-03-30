@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.fumbles (
-	play_id             integer,
+	id_play             integer,
 	fumbler             varchar(7),
 	recovering_player   varchar(7),
 	return_yardage      integer,

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.games (
-	game_id             integer,
+	id_game             integer,
 	season              integer,
 	week                smallint,
 	day                 varchar,

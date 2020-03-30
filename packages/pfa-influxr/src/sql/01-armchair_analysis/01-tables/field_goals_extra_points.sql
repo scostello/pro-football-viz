@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.field_goals_extra_points (
-	play_id     integer,
+	id_play     integer,
 	type        varchar(2),
 	kicker      varchar(7),
 	distance    smallint,

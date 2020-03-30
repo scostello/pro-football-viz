@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.safeties (
-	play_id     integer,
+	id_play     integer,
 	defender    varchar(7)
 );
 

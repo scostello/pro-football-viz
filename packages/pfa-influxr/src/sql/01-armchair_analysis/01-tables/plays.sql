@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.plays (
-	game_id                 integer,
-	play_id                 integer,
+	id_game                 integer,
+	id_play                 integer,
 	team_on_offense         varchar,
 	team_on_defense         varchar,
 	play_type               varchar,

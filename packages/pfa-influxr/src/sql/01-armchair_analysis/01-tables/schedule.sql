@@ -1,7 +1,7 @@
 -- gid,seas,wk,day,date,v,h,stad,surf
 
 CREATE TABLE IF NOT EXISTS armchair_analysis.schedule (
-    game_id     integer,
+    id_game     integer,
     season      integer,
     week        integer,
     day         varchar(3),

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.redzone_appearances (
 	uuid                        integer,
-	game_id                     integer,
+	id_game                     integer,
 	player                      varchar,
 	passing_attempts            smallint,
 	passing_completions         smallint,

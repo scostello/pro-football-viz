@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.passes (
-	play_id         integer,
+	id_play         integer,
 	passer          varchar(7),
 	target          varchar(7),
 	location        varchar(2),

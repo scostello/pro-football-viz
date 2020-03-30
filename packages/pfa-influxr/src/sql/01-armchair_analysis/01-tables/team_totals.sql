@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.team_totals (
 	team_total_id                           numeric,
-	game_id                                 numeric,
+	id_game                                 numeric,
 	team_name                               varchar,
 	points                                  numeric,
 	points_quarter_one                      numeric,

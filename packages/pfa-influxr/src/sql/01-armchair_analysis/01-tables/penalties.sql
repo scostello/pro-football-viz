@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.penalties (
 	uuid                integer,
-	play_id             integer,
+	id_play             integer,
 	flagged_team        varchar(3),
 	flagged_player      varchar(7),
 	description         varchar(40),

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.kickers (
 	uuid                integer,
-	game_id             integer,
+	id_game             integer,
 	player              varchar(7),
 	pats                smallint,
 	field_goals_short   smallint,

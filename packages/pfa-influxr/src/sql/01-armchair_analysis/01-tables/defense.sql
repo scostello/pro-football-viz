@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.defense (
 	uuid                    integer,
-	game_id                 integer,
+	id_game                 integer,
 	player                  varchar(7),
 	solo_tackles            numeric,
 	combined_tackles        numeric,

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.touchdowns (
-	play_id         integer,
+	id_play         integer,
 	quarter         smallint,
 	minutes         smallint,
 	seconds         smallint,

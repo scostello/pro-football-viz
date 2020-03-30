@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.drives (
 	uuid                    integer,
-	game_id                 integer,
+	id_game                 integer,
 	first_play_id           integer,
 	team                    varchar(3),
 	drive_number            smallint,

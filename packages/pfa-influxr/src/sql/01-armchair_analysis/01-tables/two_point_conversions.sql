@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS armchair_analysis.conversions (
-	play_id         integer,
+	id_play         integer,
 	type            varchar(4),
 	ball_carrier    varchar(7),
 	passer          varchar(7),
