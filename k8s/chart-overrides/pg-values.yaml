@@ -1,0 +1,7 @@
+postgresqlUsername: "postgres"
+postgresqlPassword: "password"
+postgresqlDatabase: "postgres"
+
+service:
+  type: "NodePort"
+  nodePort: "30543"

@@ -4,6 +4,8 @@ HOSTS_FILE="/etc/hosts"
 MINIKUBE_IP=$(minikube ip)
 MINIKUBE_HOSTNAME="minikube.test"
 MINIKUBE_SUBDOMAINS="api db"
+PWD=$(pwd)
+K8S_DIR=${PWD}/k8s
 
 kubectl config use-context minikube
 
@@ -23,8 +25,6 @@ done
 
 echo "${HOSTS_ENTRY}" | sudo tee -a ${HOSTS_FILE}
 
-helm repo update
-
 install_postgres() {
   release_name="postgresql"
   if [[ -z $(helm ls --filter=${release_name}) ]]; then
@@ -32,10 +32,8 @@ install_postgres() {
   fi
 
   helm install ${release_name} \
-    --version "8.6.4" \
-    --set postgresql.password="super" \
-    --set service.type="NodePort" \
-    --set service.nodePort="30543" \
+    --version "8.6.10" \
+    --values ${K8S_DIR}/chart-overrides/pg-values.yaml \
     bitnami/postgresql
 }
 
@@ -46,11 +44,11 @@ install_kafka() {
   fi
 
   helm install ${release_name} \
-    --version "7.3.1" \
+    --version "9.0.4" \
     bitnami/kafka
 }
 
-
+helm repo update
 install_postgres
 install_kafka
 #exec skaffold dev
