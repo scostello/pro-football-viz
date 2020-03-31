@@ -12,6 +12,7 @@ const entryNames = [
   'DEFENSE.csv',
   'DRIVE.csv',
   'FGXP.csv',
+  'FUMBLE.csv',
 ];
 
 async function load(knex: Knex) {

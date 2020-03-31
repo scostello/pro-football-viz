@@ -157,7 +157,15 @@ export function up(knex: Knex): Bluebird<any> {
       table.string('kicker');
       table.integer('distance');
       table.boolean('was_made');
-    });
+    })
+    .createTable('fumbles', (table) => {
+      table.integer('id_play').notNullable();
+      table.string('fumbler');
+      table.string('recovering_player');
+      table.integer('return_yardage');
+      table.string('forcing_player');
+      table.boolean('fumble_lost');
+    })
 };
 
 export function down(knex: Knex): Bluebird<any> {

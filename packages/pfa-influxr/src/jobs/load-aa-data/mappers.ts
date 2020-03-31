@@ -18,6 +18,12 @@ const toBoolean = R.ifElse(
   R.compose(bitToBoolean, toNumber),
 );
 
+const yesNoToBoolean = R.ifElse(
+  (value: 'Y' | 'N') => value === 'Y',
+  R.always(true),
+  R.always(false),
+);
+
 type HeaderMap = { [columnName: string]: string | { name: string; transform?: (value: any) => any } };
 
 interface CsvMappable {
@@ -336,14 +342,17 @@ const kickAttempts = new MappedTable('kick_attempts', {
   },
 });
 
-// const fumbles = {
-//   pid: 'id_play',
-//   fum: 'fumbler',
-//   frcv: 'recovering_player',
-//   fry: 'return_yardage',
-//   forc: 'forcing_player',
-//   fuml: 'fumble_lost',
-// };
+const fumbles = new MappedTable('fumbles', {
+  pid: 'id_play',
+  fum: 'fumbler',
+  frcv: 'recovering_player',
+  fry: 'return_yardage',
+  forc: 'forcing_player',
+  fuml: {
+    name: 'fumble_lost',
+    transform: yesNoToBoolean,
+  },
+});
 
 // const games = {
 //   gid: 'id_game',
@@ -953,7 +962,7 @@ const mappers: { [entryPath: string]: MappedTable } = {
   'DEFENSE.csv': defense,
   'DRIVE.csv': drives,
   'FGXP.csv': kickAttempts,
-  // 'FUMBLE.csv': fumbles,
+  'FUMBLE.csv': fumbles,
   // 'GAME.csv': games,
   // 'INJURY.csv': injuries,
   // 'INTERCPT.csv': interceptions,
