@@ -2,9 +2,9 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.drives (
 	uuid                    integer,
 	id_game                 integer,
 	first_play_id           integer,
-	team                    varchar(3),
+	team                    varchar,
 	drive_number            smallint,
-	how_obtained            varchar(4),
+	how_obtained            varchar,
 	quarter                 smallint,
 	minutes                 smallint,
 	seconds                 smallint,
@@ -16,13 +16,13 @@ CREATE TABLE IF NOT EXISTS armchair_analysis.drives (
 	other_first_downs       smallint,
 	rushing_yardage         integer,
 	rushing_attempts        smallint,
-    passing_yardage         integer,
+	passing_yardage         integer,
 	passing_attempts        smallint,
 	passing_completions     smallint,
 	penalty_yardage_for     smallint,
 	penalty_yardage_against smallint,
 	net_yardage             integer,
-	result                  varchar(4)
+	result                  varchar,
 );
 
 COPY drives

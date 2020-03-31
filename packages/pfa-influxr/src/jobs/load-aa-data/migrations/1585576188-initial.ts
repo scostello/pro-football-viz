@@ -97,8 +97,8 @@ export function up(knex: Knex): Bluebird<any> {
       table.boolean('converted');
     })
     .createTable('defense', (table) => {
-      table.string('uuid').notNullable();
-      table.string('id_game').notNullable();
+      table.integer('uuid').notNullable();
+      table.integer('id_game').notNullable();
       table.string('player');
       table.float('solo_tackles');
       table.float('combined_tackles');
@@ -124,13 +124,48 @@ export function up(knex: Knex): Bluebird<any> {
       table.integer('jersey_number');
       table.integer('depth_chart');
       table.integer('nfl_player_id');
+    })
+    .createTable('drives', (table) => {
+      table.integer('uuid').notNullable();
+      table.integer('id_game').notNullable();
+      table.integer('first_play_id');
+      table.string('team');
+      table.integer('drive_number');
+      table.string('how_obtained');
+      table.integer('quarter');
+      table.integer('minutes');
+      table.integer('seconds');
+      table.integer('starting_field_position');
+      table.integer('plays');
+      table.integer('successful_plays');
+      table.integer('rushing_first_downs');
+      table.integer('passing_first_downs');
+      table.integer('other_first_downs');
+      table.integer('rushing_yardage');
+      table.integer('rushing_attempts');
+      table.integer('passing_yardage');
+      table.integer('passing_attempts');
+      table.integer('passing_completions');
+      table.integer('penalty_yardage_for');
+      table.integer('penalty_yardage_against');
+      table.integer('net_yardage');
+      table.string('result');
+    })
+    .createTable('kick_attempts', (table) => {
+      table.integer('id_play').notNullable();
+      table.string('type');
+      table.string('kicker');
+      table.integer('distance');
+      table.boolean('was_made');
     });
-}
+};
 
 export function down(knex: Knex): Bluebird<any> {
   return knex.schema
     .withSchema(schemaName)
     .dropTableIfExists('blocks')
     .dropTableIfExists('chart')
-    .dropTableIfExists('conversions');
+    .dropTableIfExists('conversions')
+    .dropTableIfExists('defense')
+    .dropTableIfExists('drives');
 }
