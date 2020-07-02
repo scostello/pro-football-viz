@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+CPUS="${CPUS:-"2"}"
+MEMORY_GI="${MEMORY_GI:-"4"}" # memory, in gb integer
+DISK_SIZE="${DISK_SIZE:-"50g"}"
+
+# ##########
+# You probably don't want to configure anything below this
+# ##########
+MEM="$(expr ${MEMORY_GI} \* 1024)" # memory, in mb integer
+
+if [[ $(minikube status -o json | jq -r '.Host') == "Running" ]]; then
+  echo "Minikube already running. Exiting..."
+else
+  exec minikube start \
+    --kubernetes-version="v1.17.3" \
+    --cpus="${CPUS}" \
+    --memory="${MEM}" \
+    --disk-size="${DISK_SIZE}" \
+    "$@"
+fi

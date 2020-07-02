@@ -1,0 +1,33 @@
+apiVersion: skaffold/v2alpha4
+kind: Config
+build:
+  tagPolicy:
+    sha256: {}
+  artifacts:
+    - image: pfv-api
+      context: ./packages/pfv-api
+      docker:
+        dockerfile: Dockerfile
+        target: debug
+      sync:
+        manual:
+          - src: '**.ts'
+            dest: src
+deploy:
+  helm:
+    releases:
+      - name: nginx-ingress
+        chartPath: stable/nginx-ingress
+        version: 1.33.5
+        remote: true
+        setValues:
+          defaultBackend.enabled: false
+          controller.hostNetwork: true
+          controller.dnsPolicy: "ClusterFirstWithHostNet"
+          rbac.create: true
+      - name: pfv-api
+        chartPath: ./packages/pfv-api/helm-chart
+        values:
+          image: pfv-api
+        setValues:
+          imagePullPolicy: Never

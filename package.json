@@ -2,6 +2,10 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "minikube:bootstrap": "npm run minikube:start && npm run minikube:init",
+    "minikube:init": "npm run minikube:clean && ./k8s/scripts/init",
+    "minikube:start": "./k8s/scripts/start",
+    "minikube:clean": "./k8s/scripts/cleanup",
     "lerna": "lerna"
   },
   "devDependencies": {

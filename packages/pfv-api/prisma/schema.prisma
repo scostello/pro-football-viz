@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:oi8XIsShM8@localhost:5434/postgres?schema=public"
+}
+
+model PersonName {
+  id        Int @id @default(autoincrement())
+  title     String?
+  first     String
+  middle    String?
+  last      String
+  suffix    String?
+  nickname  String?
+}
+
+model Person {
+  id        String     @id @default(cuid())
+  name      PersonName
+  dob       DateTime
+}
+
+model PlayerMeasurable {
+  id        Int @id @default(autoincrement())
+  height    Int?
+  weight    Int?
+  forty     Float?
+  bench     Int?
+  vertical  Float?
+  broad     Float?
+  shuttle   Float?
+  cone      Float?
+  armLength Float?
+	handSize  Float?
+  handed    String?
+}
+
+model Player {
+  id          String @id @default(cuid())
+  person      Person
+  measurable  PlayerMeasurable
+  college     CollegeProgram
+  nflPlayerId String
+}
+
+model CollegeProgram {
+  id          Int @id @default(autoincrement())
+  name        String
+  division    String
+  conference  String
+  yearFounded Int
+}
+
+model Coach {
+  id          String @id @default(cuid())
+  person      Person
+}
+
+model Executive {
+  id          String @id @default(cuid())
+  person      Person
+}
+
+model LatLng {
+  id          Int @id @default(autoincrement())
+  latitude    Float
+  longitude   Float
+}
+
+model Address {
+  id              String @id @default(cuid())
+  streetAddress1  String
+  streetAddress2  String
+  city            String
+  stateCode       String
+  zipCode         String
+  countryCode     String
+}
+
+model Location {
+  id            Int @id @default(autoincrement())
+  address       Address
+  latLtg        LatLng
+}
+
+model Stadium {
+  id          String @id @default(cuid())
+  capacity    Int
+  name        String
+  yearOpened  Int
+  location    Location
+}

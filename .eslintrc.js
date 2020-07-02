@@ -15,4 +15,11 @@ module.exports = {
     'prettier/@typescript-eslint',
     'plugin:jest/recommended',
   ],
+  rules: {
+    'no-restricted-syntax': 'off',
+    '@typescript-eslint/no-use-before-define': 'off',
+    'no-underscore-dangle': 'off',
+    'max-classes-per-file': 'off',
+    'import/prefer-default-export': 'off',
+  }
 };
