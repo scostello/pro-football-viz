@@ -4,7 +4,7 @@
   "description": "Data ingestion for pro-football-analytics",
   "main": "index.js",
   "scripts": {
-    "build": "ts-node src/index.ts load"
+    "load": "ts-node src/index.ts load"
   },
   "author": "Sean Costello <me@seancostello.io>",
   "license": "ISC",
