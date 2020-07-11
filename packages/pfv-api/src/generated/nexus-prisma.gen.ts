@@ -1,380 +1,146 @@
-import * as prisma from '@prisma/client';
-import { core } from 'nexus';
-import { GraphQLResolveInfo } from 'graphql';
+import * as Typegen from 'nexus-plugin-prisma/typegen'
+import * as Prisma from '@prisma/client';
 
-// Types helpers
-  type IsModelNameExistsInGraphQLTypes<
-  ReturnType extends any
-> = ReturnType extends core.GetGen<'objectNames'> ? true : false;
-
-type NexusPrismaScalarOpts = {
-  alias?: string;
-};
-
+// Pagination type
 type Pagination = {
-  first?: boolean;
-  last?: boolean;
-  before?: boolean;
-  after?: boolean;
-  skip?: boolean;
-};
-
-type RootObjectTypes = Pick<
-  core.GetGen<'rootTypes'>,
-  core.GetGen<'objectNames'>
->;
-
-/**
- * Determine if `B` is a subset (or equivalent to) of `A`.
-*/
-type IsSubset<A, B> = keyof A extends never
-  ? false
-  : B extends A
-  ? true
-  : false;
-
-type OmitByValue<T, ValueType> = Pick<
-  T,
-  { [Key in keyof T]: T[Key] extends ValueType ? never : Key }[keyof T]
->;
-
-type GetSubsetTypes<ModelName extends any> = keyof OmitByValue<
-  {
-    [P in keyof RootObjectTypes]: ModelName extends keyof ModelTypes
-      ? IsSubset<RootObjectTypes[P], ModelTypes[ModelName]> extends true
-        ? RootObjectTypes[P]
-        : never
-      : never;
-  },
-  never
->;
-
-type SubsetTypes<ModelName extends any> = GetSubsetTypes<
-  ModelName
-> extends never
-  ? `ERROR: No subset types are available. Please make sure that one of your GraphQL type is a subset of your t.model('<ModelName>')`
-  : GetSubsetTypes<ModelName>;
-
-type DynamicRequiredType<ReturnType extends any> = IsModelNameExistsInGraphQLTypes<
-  ReturnType
-> extends true
-  ? { type?: SubsetTypes<ReturnType> }
-  : { type: SubsetTypes<ReturnType> };
-
-type GetNexusPrismaInput<
-  ModelName extends any,
-  MethodName extends any,
-  InputName extends 'filtering' | 'ordering'
-> = ModelName extends keyof NexusPrismaInputs
-  ? MethodName extends keyof NexusPrismaInputs[ModelName]
-    ? NexusPrismaInputs[ModelName][MethodName][InputName]
-    : never
-  : never;
-
-/**
- *  Represents arguments required by Prisma Client JS that will
- *  be derived from a request's input (args, context, and info)
- *  and omitted from the GraphQL API. The object itself maps the
- *  names of these args to a function that takes an object representing
- *  the request's input and returns the value to pass to the prisma
- *  arg of the same name.
- */
-export type LocalComputedInputs<MethodName extends any> = Record<
-  string,
-  (params: LocalMutationResolverParams<MethodName>) => unknown
->
-
-export type GlobalComputedInputs = Record<
-  string,
-  (params: GlobalMutationResolverParams) => unknown
->
-
-type BaseMutationResolverParams = {
-  info: GraphQLResolveInfo
-  ctx: Context
+  first?: boolean
+  last?: boolean
+  before?: boolean
+  after?: boolean
 }
 
-export type GlobalMutationResolverParams = BaseMutationResolverParams & {
-  args: Record<string, any> & { data: unknown }
+// Prisma custom scalar names
+type CustomScalars = 'DateTime'
+
+// Prisma model type definitions
+interface PrismaModels {
+  PersonName: Prisma.PersonName
+  Person: Prisma.Person
+  PlayerMeasurable: Prisma.PlayerMeasurable
+  Player: Prisma.Player
+  CollegeProgram: Prisma.CollegeProgram
+  Coach: Prisma.Coach
+  Executive: Prisma.Executive
+  LatLng: Prisma.LatLng
+  Address: Prisma.Address
+  Location: Prisma.Location
+  Stadium: Prisma.Stadium
 }
 
-export type LocalMutationResolverParams<
-  MethodName extends any
-> = BaseMutationResolverParams & {
-  args: MethodName extends keyof core.GetGen2<'argTypes', 'Mutation'>
-    ? core.GetGen3<'argTypes', 'Mutation', MethodName>
-    : any
-}
-
-export type Context = core.GetGen<'context'>
-
-type NexusPrismaRelationOpts<
-  ModelName extends any,
-  MethodName extends any,
-  ReturnType extends any
-> = GetNexusPrismaInput<
-  // If GetNexusPrismaInput returns never, it means there are no filtering/ordering args for it.
-  ModelName,
-  MethodName,
-  'filtering'
-> extends never
-  ? {
-      alias?: string;
-      computedInputs?: LocalComputedInputs<MethodName>;
-    } & DynamicRequiredType<ReturnType>
-  : {
-      alias?: string;
-      computedInputs?: LocalComputedInputs<MethodName>;
-      filtering?:
-        | boolean
-        | Partial<
-            Record<
-              GetNexusPrismaInput<ModelName, MethodName, 'filtering'>,
-              boolean
-            >
-          >;
-      ordering?:
-        | boolean
-        | Partial<
-            Record<
-              GetNexusPrismaInput<ModelName, MethodName, 'ordering'>,
-              boolean
-            >
-          >;
-      pagination?: boolean | Pagination;
-    } & DynamicRequiredType<ReturnType>;
-
-type IsScalar<TypeName extends any> = TypeName extends core.GetGen<'scalarNames'>
-  ? true
-  : false;
-
-type IsObject<Name extends any> = Name extends core.GetGen<'objectNames'>
-  ? true
-  : false
-
-type IsEnum<Name extends any> = Name extends core.GetGen<'enumNames'>
-  ? true
-  : false
-
-type IsInputObject<Name extends any> = Name extends core.GetGen<'inputNames'>
-  ? true
-  : false
-
-/**
- * The kind that a GraphQL type may be.
- */
-type Kind = 'Enum' | 'Object' | 'Scalar' | 'InputObject'
-
-/**
- * Helper to safely reference a Kind type. For example instead of the following
- * which would admit a typo:
- *
- * ```ts
- * type Foo = Bar extends 'scalar' ? ...
- * ```
- *
- * You can do this which guarantees a correct reference:
- *
- * ```ts
- * type Foo = Bar extends AKind<'Scalar'> ? ...
- * ```
- *
- */
-type AKind<T extends Kind> = T
-
-type GetKind<Name extends any> = IsEnum<Name> extends true
-  ? 'Enum'
-  : IsScalar<Name> extends true
-  ? 'Scalar'
-  : IsObject<Name> extends true
-  ? 'Object'
-  : IsInputObject<Name> extends true
-  ? 'InputObject'
-  // FIXME should be `never`, but GQL objects named differently
-  // than backing type fall into this branch
-  : 'Object'
-
-type NexusPrismaFields<ModelName extends keyof NexusPrismaTypes> = {
-  [MethodName in keyof NexusPrismaTypes[ModelName]]: NexusPrismaMethod<
-    ModelName,
-    MethodName,
-    GetKind<NexusPrismaTypes[ModelName][MethodName]> // Is the return type a scalar?
-  >;
-};
-
-type NexusPrismaMethod<
-  ModelName extends keyof NexusPrismaTypes,
-  MethodName extends keyof NexusPrismaTypes[ModelName],
-  ThisKind extends Kind,
-  ReturnType extends any = NexusPrismaTypes[ModelName][MethodName]
-> =
-  ThisKind extends AKind<'Enum'>
-  ? () => NexusPrismaFields<ModelName>
-  : ThisKind extends AKind<'Scalar'>
-  ? (opts?: NexusPrismaScalarOpts) => NexusPrismaFields<ModelName> // Return optional scalar opts
-  : IsModelNameExistsInGraphQLTypes<ReturnType> extends true // If model name has a mapped graphql types
-  ? (
-      opts?: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>
-    ) => NexusPrismaFields<ModelName> // Then make opts optional
-  : (
-      opts: NexusPrismaRelationOpts<ModelName, MethodName, ReturnType>
-    ) => NexusPrismaFields<ModelName>; // Else force use input the related graphql type -> { type: '...' }
-
-type GetNexusPrismaMethod<
-  TypeName extends string
-> = TypeName extends keyof NexusPrismaMethods
-  ? NexusPrismaMethods[TypeName]
-  : <CustomTypeName extends keyof ModelTypes>(
-      typeName: CustomTypeName
-    ) => NexusPrismaMethods[CustomTypeName];
-
-type GetNexusPrisma<
-  TypeName extends string,
-  ModelOrCrud extends 'model' | 'crud'
-> = ModelOrCrud extends 'model'
-  ? TypeName extends 'Mutation'
-    ? never
-    : TypeName extends 'Query'
-    ? never
-    : GetNexusPrismaMethod<TypeName>
-  : ModelOrCrud extends 'crud'
-  ? TypeName extends 'Mutation'
-    ? GetNexusPrismaMethod<TypeName>
-    : TypeName extends 'Query'
-    ? GetNexusPrismaMethod<TypeName>
-    : never
-  : never;
-  
-
-// Generated
-interface ModelTypes {
-  PersonName: prisma.PersonName
-  Person: prisma.Person
-  PlayerMeasurable: prisma.PlayerMeasurable
-  Player: prisma.Player
-  CollegeProgram: prisma.CollegeProgram
-  Coach: prisma.Coach
-  Executive: prisma.Executive
-  LatLng: prisma.LatLng
-  Address: prisma.Address
-  Location: prisma.Location
-  Stadium: prisma.Stadium
-}
-  
+// Prisma input types metadata
 interface NexusPrismaInputs {
   Query: {
     personNames: {
-  filtering: 'id' | 'title' | 'first' | 'middle' | 'last' | 'suffix' | 'nickname' | 'persons' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'title' | 'first' | 'middle' | 'last' | 'suffix' | 'nickname'
-}
+      filtering: 'id' | 'title' | 'first' | 'middle' | 'last' | 'suffix' | 'nickname' | 'Person' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'title' | 'first' | 'middle' | 'last' | 'suffix' | 'nickname'
+    }
     people: {
-  filtering: 'id' | 'dob' | 'players' | 'coaches' | 'executives' | 'AND' | 'OR' | 'NOT' | 'name'
-  ordering: 'id' | 'name' | 'dob'
-}
+      filtering: 'id' | 'idPersonName' | 'dob' | 'Player' | 'Coach' | 'Executive' | 'AND' | 'OR' | 'NOT' | 'name'
+      ordering: 'id' | 'idPersonName' | 'dob'
+    }
     playerMeasurables: {
-  filtering: 'id' | 'height' | 'weight' | 'forty' | 'bench' | 'vertical' | 'broad' | 'shuttle' | 'cone' | 'armLength' | 'handSize' | 'handed' | 'players' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'height' | 'weight' | 'forty' | 'bench' | 'vertical' | 'broad' | 'shuttle' | 'cone' | 'armLength' | 'handSize' | 'handed'
-}
+      filtering: 'id' | 'height' | 'weight' | 'forty' | 'bench' | 'vertical' | 'broad' | 'shuttle' | 'cone' | 'armLength' | 'handSize' | 'handed' | 'Player' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'height' | 'weight' | 'forty' | 'bench' | 'vertical' | 'broad' | 'shuttle' | 'cone' | 'armLength' | 'handSize' | 'handed'
+    }
     players: {
-  filtering: 'id' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
-  ordering: 'id' | 'person' | 'measurable' | 'college' | 'nflPlayerId'
-}
+      filtering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
+      ordering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId'
+    }
     collegePrograms: {
-  filtering: 'id' | 'name' | 'division' | 'conference' | 'yearFounded' | 'players' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'name' | 'division' | 'conference' | 'yearFounded'
-}
+      filtering: 'id' | 'name' | 'division' | 'conference' | 'yearFounded' | 'Player' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'name' | 'division' | 'conference' | 'yearFounded'
+    }
     coaches: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT' | 'person'
-  ordering: 'id' | 'person'
-}
+      filtering: 'id' | 'idPerson' | 'AND' | 'OR' | 'NOT' | 'person'
+      ordering: 'id' | 'idPerson'
+    }
     executives: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT' | 'person'
-  ordering: 'id' | 'person'
-}
+      filtering: 'id' | 'idPerson' | 'AND' | 'OR' | 'NOT' | 'person'
+      ordering: 'id' | 'idPerson'
+    }
     latLngs: {
-  filtering: 'id' | 'latitude' | 'longitude' | 'locations' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'latitude' | 'longitude'
-}
+      filtering: 'id' | 'latitude' | 'longitude' | 'Location' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'latitude' | 'longitude'
+    }
     addresses: {
-  filtering: 'id' | 'streetAddress1' | 'streetAddress2' | 'city' | 'stateCode' | 'zipCode' | 'countryCode' | 'locations' | 'AND' | 'OR' | 'NOT'
-  ordering: 'id' | 'streetAddress1' | 'streetAddress2' | 'city' | 'stateCode' | 'zipCode' | 'countryCode'
-}
+      filtering: 'id' | 'streetAddress1' | 'streetAddress2' | 'city' | 'stateCode' | 'zipCode' | 'countryCode' | 'Location' | 'AND' | 'OR' | 'NOT'
+      ordering: 'id' | 'streetAddress1' | 'streetAddress2' | 'city' | 'stateCode' | 'zipCode' | 'countryCode'
+    }
     locations: {
-  filtering: 'id' | 'stadiums' | 'AND' | 'OR' | 'NOT' | 'address' | 'latLtg'
-  ordering: 'id' | 'address' | 'latLtg'
-}
+      filtering: 'id' | 'idAddress' | 'idCoordinates' | 'Stadium' | 'AND' | 'OR' | 'NOT' | 'address' | 'latLtg'
+      ordering: 'id' | 'idAddress' | 'idCoordinates'
+    }
     stadiums: {
-  filtering: 'id' | 'capacity' | 'name' | 'yearOpened' | 'AND' | 'OR' | 'NOT' | 'location'
-  ordering: 'id' | 'capacity' | 'name' | 'yearOpened' | 'location'
-}
-
+      filtering: 'id' | 'idLocation' | 'capacity' | 'name' | 'yearOpened' | 'AND' | 'OR' | 'NOT' | 'location'
+      ordering: 'id' | 'idLocation' | 'capacity' | 'name' | 'yearOpened'
+    }
   },
-    PersonName: {
-    persons: {
-  filtering: 'id' | 'dob' | 'players' | 'coaches' | 'executives' | 'AND' | 'OR' | 'NOT' | 'name'
-  ordering: 'id' | 'name' | 'dob'
-}
+  PersonName: {
+    Person: {
+      filtering: 'id' | 'idPersonName' | 'dob' | 'Player' | 'Coach' | 'Executive' | 'AND' | 'OR' | 'NOT' | 'name'
+      ordering: 'id' | 'idPersonName' | 'dob'
+    }
+  }
+  Person: {
+    Player: {
+      filtering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
+      ordering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId'
+    }
+    Coach: {
+      filtering: 'id' | 'idPerson' | 'AND' | 'OR' | 'NOT' | 'person'
+      ordering: 'id' | 'idPerson'
+    }
+    Executive: {
+      filtering: 'id' | 'idPerson' | 'AND' | 'OR' | 'NOT' | 'person'
+      ordering: 'id' | 'idPerson'
+    }
+  }
+  PlayerMeasurable: {
+    Player: {
+      filtering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
+      ordering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId'
+    }
+  }
+  Player: {
 
-  },  Person: {
-    players: {
-  filtering: 'id' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
-  ordering: 'id' | 'person' | 'measurable' | 'college' | 'nflPlayerId'
-}
-    coaches: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT' | 'person'
-  ordering: 'id' | 'person'
-}
-    executives: {
-  filtering: 'id' | 'AND' | 'OR' | 'NOT' | 'person'
-  ordering: 'id' | 'person'
-}
+  }
+  CollegeProgram: {
+    Player: {
+      filtering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
+      ordering: 'id' | 'idPerson' | 'idMeasurables' | 'idCollege' | 'nflPlayerId'
+    }
+  }
+  Coach: {
 
-  },  PlayerMeasurable: {
-    players: {
-  filtering: 'id' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
-  ordering: 'id' | 'person' | 'measurable' | 'college' | 'nflPlayerId'
-}
+  }
+  Executive: {
 
-  },  Player: {
-
-
-  },  CollegeProgram: {
-    players: {
-  filtering: 'id' | 'nflPlayerId' | 'AND' | 'OR' | 'NOT' | 'person' | 'measurable' | 'college'
-  ordering: 'id' | 'person' | 'measurable' | 'college' | 'nflPlayerId'
-}
-
-  },  Coach: {
-
-
-  },  Executive: {
-
-
-  },  LatLng: {
-    locations: {
-  filtering: 'id' | 'stadiums' | 'AND' | 'OR' | 'NOT' | 'address' | 'latLtg'
-  ordering: 'id' | 'address' | 'latLtg'
-}
-
-  },  Address: {
-    locations: {
-  filtering: 'id' | 'stadiums' | 'AND' | 'OR' | 'NOT' | 'address' | 'latLtg'
-  ordering: 'id' | 'address' | 'latLtg'
-}
-
-  },  Location: {
-    stadiums: {
-  filtering: 'id' | 'capacity' | 'name' | 'yearOpened' | 'AND' | 'OR' | 'NOT' | 'location'
-  ordering: 'id' | 'capacity' | 'name' | 'yearOpened' | 'location'
-}
-
-  },  Stadium: {
-
+  }
+  LatLng: {
+    Location: {
+      filtering: 'id' | 'idAddress' | 'idCoordinates' | 'Stadium' | 'AND' | 'OR' | 'NOT' | 'address' | 'latLtg'
+      ordering: 'id' | 'idAddress' | 'idCoordinates'
+    }
+  }
+  Address: {
+    Location: {
+      filtering: 'id' | 'idAddress' | 'idCoordinates' | 'Stadium' | 'AND' | 'OR' | 'NOT' | 'address' | 'latLtg'
+      ordering: 'id' | 'idAddress' | 'idCoordinates'
+    }
+  }
+  Location: {
+    Stadium: {
+      filtering: 'id' | 'idLocation' | 'capacity' | 'name' | 'yearOpened' | 'AND' | 'OR' | 'NOT' | 'location'
+      ordering: 'id' | 'idLocation' | 'capacity' | 'name' | 'yearOpened'
+    }
+  }
+  Stadium: {
 
   }
 }
 
-interface NexusPrismaTypes {
+// Prisma output types metadata
+interface NexusPrismaOutputs {
   Query: {
     personName: 'PersonName'
     personNames: 'PersonName'
@@ -398,7 +164,6 @@ interface NexusPrismaTypes {
     locations: 'Location'
     stadium: 'Stadium'
     stadiums: 'Stadium'
-
   },
   Mutation: {
     createOnePersonName: 'PersonName'
@@ -467,7 +232,6 @@ interface NexusPrismaTypes {
     deleteOneStadium: 'Stadium'
     deleteManyStadium: 'BatchPayload'
     upsertOneStadium: 'Stadium'
-
   },
   PersonName: {
     id: 'Int'
@@ -477,17 +241,18 @@ interface NexusPrismaTypes {
     last: 'String'
     suffix: 'String'
     nickname: 'String'
-    persons: 'Person'
-
-},  Person: {
+    Person: 'Person'
+  }
+  Person: {
     id: 'String'
+    idPersonName: 'Int'
     name: 'PersonName'
     dob: 'DateTime'
-    players: 'Player'
-    coaches: 'Coach'
-    executives: 'Executive'
-
-},  PlayerMeasurable: {
+    Player: 'Player'
+    Coach: 'Coach'
+    Executive: 'Executive'
+  }
+  PlayerMeasurable: {
     id: 'Int'
     height: 'Int'
     weight: 'Int'
@@ -500,38 +265,43 @@ interface NexusPrismaTypes {
     armLength: 'Float'
     handSize: 'Float'
     handed: 'String'
-    players: 'Player'
-
-},  Player: {
+    Player: 'Player'
+  }
+  Player: {
     id: 'String'
+    idPerson: 'String'
+    idMeasurables: 'Int'
+    idCollege: 'Int'
     person: 'Person'
     measurable: 'PlayerMeasurable'
     college: 'CollegeProgram'
     nflPlayerId: 'String'
-
-},  CollegeProgram: {
+  }
+  CollegeProgram: {
     id: 'Int'
     name: 'String'
     division: 'String'
     conference: 'String'
     yearFounded: 'Int'
-    players: 'Player'
-
-},  Coach: {
+    Player: 'Player'
+  }
+  Coach: {
     id: 'String'
+    idPerson: 'String'
     person: 'Person'
-
-},  Executive: {
+  }
+  Executive: {
     id: 'String'
+    idPerson: 'String'
     person: 'Person'
-
-},  LatLng: {
+  }
+  LatLng: {
     id: 'Int'
     latitude: 'Float'
     longitude: 'Float'
-    locations: 'Location'
-
-},  Address: {
+    Location: 'Location'
+  }
+  Address: {
     id: 'String'
     streetAddress1: 'String'
     streetAddress2: 'String'
@@ -539,45 +309,58 @@ interface NexusPrismaTypes {
     stateCode: 'String'
     zipCode: 'String'
     countryCode: 'String'
-    locations: 'Location'
-
-},  Location: {
+    Location: 'Location'
+  }
+  Location: {
     id: 'Int'
+    idAddress: 'String'
+    idCoordinates: 'Int'
     address: 'Address'
     latLtg: 'LatLng'
-    stadiums: 'Stadium'
-
-},  Stadium: {
+    Stadium: 'Stadium'
+  }
+  Stadium: {
     id: 'String'
+    idLocation: 'Int'
     capacity: 'Int'
     name: 'String'
     yearOpened: 'Int'
     location: 'Location'
-
+  }
 }
-}
 
+// Helper to gather all methods relative to a model
 interface NexusPrismaMethods {
-  PersonName: NexusPrismaFields<'PersonName'>
-  Person: NexusPrismaFields<'Person'>
-  PlayerMeasurable: NexusPrismaFields<'PlayerMeasurable'>
-  Player: NexusPrismaFields<'Player'>
-  CollegeProgram: NexusPrismaFields<'CollegeProgram'>
-  Coach: NexusPrismaFields<'Coach'>
-  Executive: NexusPrismaFields<'Executive'>
-  LatLng: NexusPrismaFields<'LatLng'>
-  Address: NexusPrismaFields<'Address'>
-  Location: NexusPrismaFields<'Location'>
-  Stadium: NexusPrismaFields<'Stadium'>
-  Query: NexusPrismaFields<'Query'>
-  Mutation: NexusPrismaFields<'Mutation'>
+  PersonName: Typegen.NexusPrismaFields<'PersonName'>
+  Person: Typegen.NexusPrismaFields<'Person'>
+  PlayerMeasurable: Typegen.NexusPrismaFields<'PlayerMeasurable'>
+  Player: Typegen.NexusPrismaFields<'Player'>
+  CollegeProgram: Typegen.NexusPrismaFields<'CollegeProgram'>
+  Coach: Typegen.NexusPrismaFields<'Coach'>
+  Executive: Typegen.NexusPrismaFields<'Executive'>
+  LatLng: Typegen.NexusPrismaFields<'LatLng'>
+  Address: Typegen.NexusPrismaFields<'Address'>
+  Location: Typegen.NexusPrismaFields<'Location'>
+  Stadium: Typegen.NexusPrismaFields<'Stadium'>
+  Query: Typegen.NexusPrismaFields<'Query'>
+  Mutation: Typegen.NexusPrismaFields<'Mutation'>
 }
-  
+
+interface NexusPrismaGenTypes {
+  inputs: NexusPrismaInputs
+  outputs: NexusPrismaOutputs
+  methods: NexusPrismaMethods
+  models: PrismaModels
+  pagination: Pagination
+  scalars: CustomScalars
+}
 
 declare global {
+  interface NexusPrismaGen extends NexusPrismaGenTypes {}
+
   type NexusPrisma<
     TypeName extends string,
     ModelOrCrud extends 'model' | 'crud'
-  > = GetNexusPrisma<TypeName, ModelOrCrud>;
+  > = Typegen.GetNexusPrisma<TypeName, ModelOrCrud>;
 }
   

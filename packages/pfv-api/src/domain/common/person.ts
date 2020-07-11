@@ -1,4 +1,4 @@
-import { objectType } from 'nexus';
+import { objectType } from '@nexus/schema';
 
 const PersonName = objectType({
   name: 'PersonName',
@@ -19,6 +19,7 @@ const Person = objectType({
     t.model.id();
     t.model.name();
     t.model.dob();
+    t.string('ssn');
   }
 });
 

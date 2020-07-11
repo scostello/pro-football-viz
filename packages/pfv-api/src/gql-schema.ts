@@ -1,11 +1,11 @@
-import { makeSchema } from 'nexus';
+import { makeSchema } from '@nexus/schema';
+import { nexusSchemaPrisma } from 'nexus-plugin-prisma/schema'
 import { CollegeProgram, GQLDate, GQLDateTime, GQLTime, Person, PersonName } from './domain/common';
 import { Player, PlayerMeasurable } from './domain/players';
 import { Coach } from './domain/coaches';
 import { Executive } from './domain/executives';
-import { nexusPrismaPlugin } from 'nexus-prisma';
 
-// changes!
+// changes!!
 const createSchema = () => makeSchema({
   types: [
     GQLDate,
@@ -19,14 +19,14 @@ const createSchema = () => makeSchema({
     Coach,
     Executive,
   ],
-  plugins: [nexusPrismaPlugin({
+  plugins: [nexusSchemaPrisma({
     outputs: {
-      typegen: __dirname + '/generated/nexus-prisma.gen.ts',
+      typegen: `${__dirname}/generated/nexus-prisma.gen.ts`,
     },
   })],
   outputs: {
-    schema: __dirname + '/generated/schema.gen.graphql',
-    typegen: __dirname + '/generated/nexus.gen.ts',
+    schema: `${__dirname}/generated/schema.gen.graphql`,
+    typegen: `${__dirname}/generated/nexus.gen.ts`,
   },
   typegenAutoConfig: {
     contextType: 'Context.Context',

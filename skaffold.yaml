@@ -1,18 +1,20 @@
-apiVersion: skaffold/v2alpha4
+apiVersion: skaffold/v2beta5
 kind: Config
 build:
   tagPolicy:
     sha256: {}
   artifacts:
-    - image: pfv-api
+    - image: scostello/pfv-api
       context: ./packages/pfv-api
       docker:
         dockerfile: Dockerfile
         target: debug
       sync:
         manual:
-          - src: '**.ts'
-            dest: src
+          # Sync all the javascript files that are in the src folder
+          # with the container src folder
+          - src: 'src/**/*.ts'
+            dest: .
 deploy:
   helm:
     releases:
@@ -27,7 +29,7 @@ deploy:
           rbac.create: true
       - name: pfv-api
         chartPath: ./packages/pfv-api/helm-chart
-        values:
-          image: pfv-api
+        artifactOverrides:
+          image: scostello/pfv-api
         setValues:
           imagePullPolicy: Never

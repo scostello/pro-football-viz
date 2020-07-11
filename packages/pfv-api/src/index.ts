@@ -1,5 +1,5 @@
 import { init } from './init';
 
 init(config => {
-  console.log(`Server started at ${config.protocol}://${config.host}:${config.port} 🔥🔥`);
+  console.log(`Ssserver started at ${config.protocol}://${config.host}:${config.port} 🔥🔥`);
 });

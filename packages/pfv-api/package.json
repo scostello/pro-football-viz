@@ -10,32 +10,32 @@
     "start": "node dist/index.js",
     "clean": "del dist",
     "build": "run-s clean generate tsc",
-    "generate": "run-s generate:prisma generate:nexus",
-    "generate:prisma": "prisma2 generate",
-    "generate:nexus": "ts-node --transpile-only src/gql-schema",
-    "postinstall": "npm -s run generate",
+    "postinstall": "prisma generate",
     "tsc": "tsc",
-    "watch": "ts-node-dev --respawn --transpileOnly src/index.ts"
+    "watch": "ts-node-dev --respawn --transpile-only -- src/index.ts",
+    "ts-node": "ts-node"
   },
   "dependencies": {
-    "@prisma/client": "^2.0.0-preview023",
-    "apollo-server": "^2.14.2",
+    "@nexus/schema": "^0.14.0",
+    "@prisma/cli": "^2.2.0",
+    "apollo-server": "^2.15.1",
+    "apollo-server-core": "^2.15.1",
     "cuid": "^2.1.8",
-    "graphql": "^14.6.0",
+    "express": "^4.17.1",
+    "apollo-server-express": "^2.15.1",
+    "graphql": "^15.2.0",
     "graphql-iso-date": "^3.6.1",
-    "graphql-type-json": "^0.3.1",
-    "nexus": "^0.12.0-rc.13",
-    "nexus-prisma": "^0.11.1",
-    "rxjs": "^6.5.4"
+    "graphql-type-json": "^0.3.2",
+    "nexus-plugin-prisma": "^0.16.1",
+    "rxjs": "^6.6.0"
   },
   "devDependencies": {
-    "@prisma/sdk": "^0.0.226",
-    "@types/jest": "^25.1.4",
-    "del-cli": "^3.0.0",
+    "@types/graphql-iso-date": "^3.4.0",
+    "@types/jest": "^26.0.3",
+    "del-cli": "^3.0.1",
     "npm-run-all": "^4.1.5",
-    "prisma2": "^2.0.0-preview024",
-    "ts-node": "^8.6.2",
-    "ts-node-dev": "^1.0.0-pre.44",
-    "typescript": "^3.8.3"
+    "ts-node": "^8.10.2",
+    "ts-node-dev": "^1.0.0-pre.51",
+    "typescript": "^3.9.6"
   }
 }

@@ -1,9 +1,9 @@
-import { asNexusMethod } from 'nexus';
+import { asNexusMethod } from '@nexus/schema';
 import { GraphQLDate, GraphQLDateTime, GraphQLTime } from 'graphql-iso-date';
 
-const GQLDate = asNexusMethod(GraphQLDate, "date");
-const GQLDateTime = asNexusMethod(GraphQLDateTime, "datetime");
-const GQLTime = asNexusMethod(GraphQLTime, "time");
+const GQLDate = asNexusMethod(GraphQLDate, 'date');
+const GQLDateTime = asNexusMethod(GraphQLDateTime, 'datetime');
+const GQLTime = asNexusMethod(GraphQLTime, 'time');
 
 export {
   GQLDate,
