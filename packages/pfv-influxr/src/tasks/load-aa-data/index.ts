@@ -1,5 +1,6 @@
 import Path from 'path';
 import Knex from 'knex';
+import { ILogger } from 'stoolie';
 import load from './load';
 
 const config = {
@@ -14,22 +15,72 @@ const config = {
 
 /** Knex */
 export const schemaName = 'armchair_analysis_2020';
-const knex = Knex({
-  client: 'pg',
-  connection: config.db,
-  migrations: {
-    directory: Path.resolve(__dirname, 'migrations'),
-    tableName: 'knex_migrations',
-    schemaName,
-  },
-});
+const createDbConnection = () =>
+  Knex({
+    client: 'pg',
+    connection: config.db,
+    migrations: {
+      directory: Path.resolve(__dirname, 'migrations'),
+      tableName: 'knex_migrations',
+      schemaName,
+    },
+  });
 
-const execute = async () => {
-  await knex.schema.createSchemaIfNotExists(schemaName);
-  await knex.migrate.latest();
-  await load(knex);
-  console.log('closing connection');
-  await knex.destroy();
+type ProcessOptions = {
+  process: () => Promise<any>;
+  beforeMessage: string;
+  afterMessage: string;
+};
+
+const processWrapper = (logger: ILogger) => async (
+  processOptions: ProcessOptions,
+): Promise<any> => {
+  const { process, beforeMessage, afterMessage } = processOptions;
+
+  logger.info(beforeMessage);
+  const result = await process();
+  logger.info(afterMessage);
+
+  return result;
+};
+
+const execute = async (logger: ILogger) => {
+  const entry = logger.withFields({
+    schema: schemaName,
+  });
+
+  const runProcess = processWrapper(entry);
+
+  const dbCxn = await runProcess({
+    process: () => Promise.resolve(createDbConnection()),
+    beforeMessage: 'Creating db connection',
+    afterMessage: 'Successfully created db connection',
+  });
+
+  await runProcess({
+    process: () =>
+      Promise.resolve(dbCxn.schema.createSchemaIfNotExists(schemaName)),
+    beforeMessage: 'Creating schema is not already exists',
+    afterMessage: 'Successfully created schema if not already exists',
+  });
+
+  await runProcess({
+    process: () => dbCxn.migrate.latest(),
+    beforeMessage: 'Migrate to latest db schema',
+    afterMessage: 'Successfully migrated to latest db schema',
+  });
+
+  await runProcess({
+    process: () => load({ logger: entry, dbCxn }),
+    beforeMessage: 'Begin data loading process',
+    afterMessage: 'Successfully completed data loading process',
+  });
+
+  await runProcess({
+    process: () => dbCxn.destroy(),
+    beforeMessage: 'Closing database connection',
+    afterMessage: 'Successfully closed db connection',
+  });
 };
 
 export default execute;

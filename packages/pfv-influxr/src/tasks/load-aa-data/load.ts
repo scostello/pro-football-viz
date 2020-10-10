@@ -1,9 +1,10 @@
-// import Fs from 'fs';
+import Fs from 'fs';
 import * as Knex from 'knex';
 import S3 from 'aws-sdk/clients/s3';
 import etl from 'etl';
-import unzipper from 'unzipper';
+import extract from 'extract-zip';
 import csv from 'csv-parser';
+import { ILogger } from 'stoolie';
 import { getMapper } from './mappers';
 
 const entryNames = [
@@ -36,40 +37,76 @@ const entryNames = [
   'TD.csv',
 ];
 
-async function load(knex: Knex) {
+type LoadParams = {
+  logger: ILogger;
+  dbCxn: Knex;
+};
+
+const loadWith = async ({ logger, dbCxn }: LoadParams) => {
   const s3Client = new S3();
 
-  await s3Client.getObject({ Bucket: 'nfl-data', Key: 'armchair-analysis/nfl_00-19.zip' })
-    .createReadStream()
-    .pipe(unzipper.Parse())
-    .pipe(etl.map((entry) => {
-      console.log(`found ${entry.path}`);
-      if (entryNames.some(entryName => entryName === entry.path)) {
-        const mapper = getMapper(entry.path);
-        console.log(`processing ${entry.path}`);
+  const sourceConfigs = {
+    Bucket: 'nfl-data',
+    Key: 'armchair-analysis/nfl_00-19.zip',
+  };
 
-        return entry
-          .pipe(csv(mapper))
-          .pipe(etl.collect(mapper.batchSize, 250))
-          .pipe(etl.map((records) => {
-            return knex.batchInsert(`armchair_analysis_2020.${mapper.tableName}`, records);
-          }))
-          .promise();
-      }
+  const entry = logger.withFields({
+    sourceType: 'S3 ReadStream',
+    sourceConfigs,
+  });
 
-      return entry.autodrain().promise();
-    }))
-    .on('finish', () => {
-      console.log('finished');
-    })
-    .on('error', (err) => {
-      console.log('errored', err);
-    })
-    .on('data', () => {
-      console.log('data\'s');
-    })
-    .promise();
+  entry.info('Attempt to download data from source');
 
-}
+  await new Promise((resolve, reject) => {
+    s3Client
+      .getObject(sourceConfigs)
+      .createReadStream()
+      .pipe(Fs.createWriteStream('/tmp/nfl_00-19.zip'))
+      .on('finish', () => {
+        resolve();
+      })
+      .on('error', (err: Error) => {
+        reject(err);
+      });
+  });
 
-export default load;
+  await extract('/tmp/nfl_00-19.zip', { dir: '/tmp/nfl_00-19' });
+
+  await Promise.all(entryNames.map(entryName => {
+    return new Promise((resolve, reject) => {
+      const logEntry = entry.withFields({
+        name: entryName,
+      });
+
+      const mapper = getMapper(entryName);
+
+      logEntry.info('Extracting content');
+      Fs.createReadStream(`/tmp/nfl_00-19/${entryName}`)
+        .pipe(csv(mapper))
+        .pipe(etl.collect(mapper.batchSize, 250))
+        .pipe(
+          etl.map(records => {
+            return dbCxn.batchInsert(
+              `armchair_analysis_2020.${mapper.tableName}`,
+              records,
+            );
+          }),
+        )
+        .on('data', (data) => {
+          logEntry.withFields(data).info('Inserted data');
+        })
+        .on('finish', () => {
+          logEntry.info('Finished loading data.');
+          resolve();
+        })
+        .on('error', err => {
+          logEntry
+            .withError(err)
+            .error('An error occured during data loading');
+          reject(err);
+        });
+    });
+  }));
+};
+
+export default loadWith;

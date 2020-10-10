@@ -13,10 +13,11 @@
     "commander": "^4.1.1",
     "csv-parser": "^2.3.2",
     "etl": "^0.6.12",
+    "extract-zip": "^2.0.1",
     "knex": "^0.20.13",
     "pg": "^7.18.2",
     "ramda": "^0.27.0",
-    "unzipper": "^0.10.11"
+    "stoolie": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^13.9.1",
