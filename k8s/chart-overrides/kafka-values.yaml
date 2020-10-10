@@ -1,0 +1,15 @@
+externalAccess:
+  ## Enable Kubernetes external cluster access to Kafka brokers
+  enabled: true
+
+  autoDiscovery:
+    enabled: true
+
+  service:
+    type: NodePort
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: true

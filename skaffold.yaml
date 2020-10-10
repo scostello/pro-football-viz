@@ -36,9 +36,20 @@ deploy:
           schemaRegistry.proxy: true
           service.type: "ClusterIP"
           ingress.enabled: true
-          ingress.hosts: { host: "schema-ui.minikube.test" }
+          ingress.hosts: { host: "schema-registry.minikube.test" }
           ingress.path: "/"
-
+      - name: kafka-connect-ui
+        chartPath: gradiant/kafka-connect-ui
+        version: 0.1.0
+        remote: true
+        setValues:
+          connectCluster.url: "http://kafka-connect-cp-kafka-connect:8083"
+          ingress.enabled: true
+          ingress.hosts: { host: "kafka-connect.minikube.test" }
+          ingress.path: "/"
+  kubectl:
+    manifests:
+    - k8s/manifests/*.yaml
       # - name: pfv-api
       #   chartPath: ./packages/pfv-api/helm-chart
       #   artifactOverrides:

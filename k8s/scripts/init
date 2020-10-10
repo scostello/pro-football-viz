@@ -3,7 +3,7 @@
 HOSTS_FILE="/etc/hosts"
 MINIKUBE_IP=$(minikube ip)
 MINIKUBE_HOSTNAME="minikube.test"
-MINIKUBE_SUBDOMAINS="api db schema-ui"
+MINIKUBE_SUBDOMAINS="api db kafka schema-registry kafka-connect eventstore"
 PWD=$(pwd)
 K8S_DIR=${PWD}/k8s
 
@@ -27,7 +27,7 @@ echo "${HOSTS_ENTRY}" | sudo tee -a ${HOSTS_FILE}
 
 install_postgres() {
   release_name="postgresql"
-  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+  if [[ -n $(helm ls --filter=${release_name}) ]]; then
       helm uninstall ${release_name}
   fi
 
@@ -39,18 +39,19 @@ install_postgres() {
 
 install_kafka() {
   release_name="kafka"
-  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+  if [[ -n $(helm ls --filter=${release_name}) ]]; then
       helm uninstall ${release_name}
   fi
 
   helm install ${release_name} \
-    --version "9.0.4" \
+    --version "11.8.6" \
+    --values ${K8S_DIR}/chart-overrides/kafka-values.yaml \
     bitnami/kafka
 }
 
 install_schema_registry() {
   release_name="schema-registry"
-  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+  if [[ -n $(helm ls --filter=${release_name}) ]]; then
       helm uninstall ${release_name}
   fi
 
@@ -63,7 +64,7 @@ install_schema_registry() {
 
 install_kafka_connect() {
   release_name="kafka-connect"
-  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+  if [[ -n $(helm ls --filter=${release_name}) ]]; then
       helm uninstall ${release_name}
   fi
 
@@ -74,10 +75,22 @@ install_kafka_connect() {
      
 }
 
+install_eventstore() {
+  release_name="eventstore"
+  if [[ -n $(helm ls --filter=${release_name}) ]]; then
+      helm uninstall ${release_name}
+  fi
+
+  helm install ${release_name} \
+    --version "0.2.5" \
+    eventstore/eventstore     
+}
+
 helm repo update
 # install_postgres
 # install_kafka
 # install_schema_registry
 # install_kafka_connect
+# install_eventstore
 
 #exec skaffold dev

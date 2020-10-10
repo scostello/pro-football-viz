@@ -1,7 +1,18 @@
 cp-kafka-connect:
   enabled: true
   kafka:
-    bootstrapServers: "PLAINTEXT://kafka-headless:9092"  
+    bootstrapServers: "PLAINTEXT://kafka-headless:9092"
+  configurationOverrides:
+    "plugin.path": "/usr/share/java,/usr/share/confluent-hub-components"
+    "key.converter": "io.confluent.connect.avro.AvroConverter"
+    "value.converter": "io.confluent.connect.avro.AvroConverter"
+    "key.converter.schemas.enable": "false"
+    "value.converter.schemas.enable": "false"
+    "internal.key.converter": "org.apache.kafka.connect.json.JsonConverter"
+    "internal.value.converter": "org.apache.kafka.connect.json.JsonConverter"
+    "config.storage.replication.factor": "1"
+    "offset.storage.replication.factor": "1"
+    "status.storage.replication.factor": "1"
 
 cp-kafka:
   enabled: false  
