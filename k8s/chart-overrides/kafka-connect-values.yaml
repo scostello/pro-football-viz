@@ -1,0 +1,22 @@
+cp-kafka-connect:
+  enabled: true
+  kafka:
+    bootstrapServers: "PLAINTEXT://kafka-headless:9092"  
+
+cp-kafka:
+  enabled: false  
+  
+cp-zookeeper:
+  enabled: false
+  
+cp-kafka-rest:
+  enabled: false
+  
+cp-schema-registry:
+  enabled: false
+  
+cp-ksql-server:
+  enabled: false
+  
+cp-control-center:
+  enabled: false

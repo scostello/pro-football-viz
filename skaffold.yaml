@@ -1,20 +1,20 @@
-apiVersion: skaffold/v2beta5
+apiVersion: skaffold/v2beta8
 kind: Config
 build:
   tagPolicy:
     sha256: {}
-  artifacts:
-    - image: scostello/pfv-api
-      context: ./packages/pfv-api
-      docker:
-        dockerfile: Dockerfile
-        target: debug
-      sync:
-        manual:
-          # Sync all the javascript files that are in the src folder
-          # with the container src folder
-          - src: 'src/**/*.ts'
-            dest: .
+  # artifacts:
+  #   - image: scostello/pfv-api
+  #     context: ./packages/pfv-api
+  #     docker:
+  #       dockerfile: Dockerfile
+  #       target: debug
+  #     sync:
+  #       manual:
+  #         # Sync all the javascript files that are in the src folder
+  #         # with the container src folder
+  #         - src: 'src/**/*.ts'
+  #           dest: .
 deploy:
   helm:
     releases:
@@ -27,9 +27,21 @@ deploy:
           controller.hostNetwork: true
           controller.dnsPolicy: "ClusterFirstWithHostNet"
           rbac.create: true
-      - name: pfv-api
-        chartPath: ./packages/pfv-api/helm-chart
-        artifactOverrides:
-          image: scostello/pfv-api
+      - name: schema-registry-ui
+        chartPath: stable/schema-registry-ui
+        version: 0.4.2
+        remote: true
         setValues:
-          imagePullPolicy: Never
+          schemaRegistry.url: "http://schema-registry-cp-schema-registry"
+          schemaRegistry.proxy: true
+          service.type: "ClusterIP"
+          ingress.enabled: true
+          ingress.hosts: { host: "schema-ui.minikube.test" }
+          ingress.path: "/"
+
+      # - name: pfv-api
+      #   chartPath: ./packages/pfv-api/helm-chart
+      #   artifactOverrides:
+      #     image: scostello/pfv-api
+      #   setValues:
+      #     imagePullPolicy: Never

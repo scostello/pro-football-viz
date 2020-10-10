@@ -3,7 +3,7 @@
 HOSTS_FILE="/etc/hosts"
 MINIKUBE_IP=$(minikube ip)
 MINIKUBE_HOSTNAME="minikube.test"
-MINIKUBE_SUBDOMAINS="api db"
+MINIKUBE_SUBDOMAINS="api db schema-ui"
 PWD=$(pwd)
 K8S_DIR=${PWD}/k8s
 
@@ -48,7 +48,36 @@ install_kafka() {
     bitnami/kafka
 }
 
+install_schema_registry() {
+  release_name="schema-registry"
+  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+      helm uninstall ${release_name}
+  fi
+
+  helm install ${release_name} \
+    --version "0.5.0" \
+    --values ${K8S_DIR}/chart-overrides/schema-registry-values.yaml \
+    confluentinc/cp-helm-charts
+     
+}
+
+install_kafka_connect() {
+  release_name="kafka-connect"
+  if [[ -z $(helm ls --filter=${release_name}) ]]; then
+      helm uninstall ${release_name}
+  fi
+
+  helm install ${release_name} \
+    --version "0.5.0" \
+    --values ${K8S_DIR}/chart-overrides/kafka-connect-values.yaml \
+    confluentinc/cp-helm-charts
+     
+}
+
 helm repo update
-install_postgres
-install_kafka
+# install_postgres
+# install_kafka
+# install_schema_registry
+# install_kafka_connect
+
 #exec skaffold dev
