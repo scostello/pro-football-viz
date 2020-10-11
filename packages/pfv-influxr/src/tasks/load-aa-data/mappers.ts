@@ -1,4 +1,5 @@
 import * as R from 'ramda';
+import * as RA from 'ramda-adjunct';
 
 const toNumber = (value: any) => Number(value);
 
@@ -66,12 +67,13 @@ class MappedTable implements CsvMappable {
   }
 
   mapHeaders = ({ header }) => {
-    const newHeader = R.has('name', this._headerMap[header])
-      ? R.prop('name', this._headerMap[header])
+
+    const newHeader: string = R.and(RA.isPlainObject(this._headerMap[header]), R.has('name', this._headerMap[header]))
+      ? R.prop('name', (this._headerMap as { name: string; transform?: (value: any) => any })[header])
       : this._headerMap[header];
 
     const transform = R.has('transform', this._headerMap[header])
-      ? R.prop('transform', this._headerMap[header])
+      ? R.prop('transform', (this._headerMap as { name: string; transform?: (value: any) => any })[header])
       : nullifyEmpty;
 
     this._newHeaders[newHeader] = {

@@ -82,7 +82,10 @@ const loadWith = async ({ logger, dbCxn }: LoadParams) => {
 
       logEntry.info('Extracting content');
       Fs.createReadStream(`/tmp/nfl_00-19/${entryName}`)
-        .pipe(csv(mapper))
+        .pipe(csv({
+          mapHeaders: mapper.mapHeaders.bind(mapper),
+          mapValues: mapper.mapValues.bind(mapper),
+        }))
         .pipe(etl.collect(mapper.batchSize, 250))
         .pipe(
           etl.map(records => {
