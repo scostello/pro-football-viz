@@ -87,10 +87,10 @@ install_eventstore() {
 }
 
 helm repo update
-# install_postgres
-# install_kafka
-# install_schema_registry
-# install_kafka_connect
-# install_eventstore
+install_postgres
+install_kafka
+install_schema_registry
+install_kafka_connect
+install_eventstore
 
 #exec skaffold dev
