@@ -19,7 +19,7 @@
   "author": "Sean Costello <me@seancostello.io>",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^2.14.2",
+    "apollo-server": "^2.25.4",
     "apollo-server-express": "^2.14.2",
     "bluebird": "^3.7.2",
     "dataloader": "^2.0.0",
